@@ -46,6 +46,7 @@ public class ClientConfiguration {
     	
     }
 
+    // todo 4.修改后可以删除
     public void init() {
 
         String clientUserNameStr = ConfigurationWrapper.getProp(ConfKeys.KEYS_EVENTMESH_ROCKETMQ_USERNAME);

@@ -47,8 +47,8 @@ public class ConfigService {
 			configInfo.setPath(config.path());
 			configInfo.setPrefix(config.prefix());
 			configInfo.setHump(config.hump());
-			configInfo.setObject(object);
 			configInfo.setMonitor(config.monitor());
+
 			Field field = clazz.getDeclaredField(configInfo.getField());
 			configInfo.setClazz(field.getType());
 			Object configObject = this.getConfig(configInfo);
@@ -70,7 +70,7 @@ public class ConfigService {
 	
 	public <T> T getConfig(Class<?> clazz) {
 		try {
-			return this.getConfig(ConfigInfo.builder().clazz(clazz).hump(ConfigInfo.HUPM_SPOT).build());
+			return this.getConfig(ConfigInfo.builder().clazz(clazz).hump(ConfigInfo.HUMP_SPOT).build());
 		}catch(Exception e) {
 			throw new RuntimeException(e);
 		}
@@ -80,7 +80,7 @@ public class ConfigService {
 	public <T> T getConfig(ConfigInfo configInfo) throws Exception {
 		Object object;
 		if (Objects.isNull(configInfo.getPath())) {
-			object = FileLoad.getPropertiesFileLoad().getConfig(properties, configInfo);
+			object = FileLoad.getPropertiesFileLoad().getConfig(properties, configInfo); // 从主配置文件中解析
 		} else {
 			String path = configInfo.getPath();
 			String filePath;

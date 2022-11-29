@@ -30,6 +30,10 @@ public interface FileLoad {
 		return PROPERTIES_FILE_LOAD;
 	}
 
+	public static YamlFileLoad getYamlFileLoad() {
+		return YAML_FILE_LOAD;
+	}
+
 	public <T> T getConfig(ConfigInfo configInfo) throws Exception;
 
 	class PropertiesFileLoad implements FileLoad {

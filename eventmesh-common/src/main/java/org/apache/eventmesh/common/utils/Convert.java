@@ -1,6 +1,5 @@
 package org.apache.eventmesh.common.utils;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.eventmesh.common.config.ConfigInfo;
 import org.apache.eventmesh.common.config.NotNull;
 
@@ -60,12 +59,14 @@ public class Convert {
 		convertInfo.setConfigInfo(configInfo);
 		convertInfo.setProperties(properties);
 		convertInfo.setClazz(configInfo.getClazz());
-		
+
+		// 简单类型解析
 		 ConvertValue<?> convertValue = classToConvert.get(configInfo.getClazz());
 		 if(Objects.nonNull(convertValue)) {
 			 return convertValue.convert(convertInfo);
 		 }
-		
+
+		// 复杂类型解析，如 EventMeshHTTPConfiguration
 		ConvertObject convertObject = new ConvertObject();
 		return convertObject.convert(convertInfo);
 	}
@@ -85,7 +86,8 @@ public class Convert {
 		
 		public T convert(ConvertInfo convertInfo );
 	}
-	
+
+	// 复杂类型解析，如 EventMeshHTTPConfiguration
 	private class ConvertObject implements ConvertValue<Object> {
 
 		private String prefix;
@@ -103,18 +105,19 @@ public class Convert {
 			if(Objects.nonNull(prefix)) {
 				this.prefix = prefix.endsWith(".") ? prefix : prefix + ".";
 			}
-			this.hump = Objects.equals(configInfo.getHump() , ConfigInfo.HUPM_ROD)? '_':'.';
+			this.hump = Objects.equals(configInfo.getHump() , ConfigInfo.HUMP_ROD)? '_':'.';
 			this.clazz = convertInfo.getClazz();
 			this.convertInfo.setHump(this.hump);
 		}
 		
-		@Override
+		@Override // 配置转换方法，从 主配置文件，解析出 Object 如 EventMeshHTTPConfiguration 对象
 		public Object convert(ConvertInfo convertInfo) {
 			try {
 				this.convertInfo = convertInfo;
-				this.object = convertInfo.getClazz().newInstance();
+				this.object = convertInfo.getClazz().newInstance(); // 配置类实例化
 				this.init(convertInfo.getConfigInfo());
 				this.setValue();
+
 				Class<?> sperclass = convertInfo.getClazz();
 				for( ; ; ) {
 					sperclass = sperclass.getSuperclass();

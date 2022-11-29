@@ -13,46 +13,29 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ConfigInfo {
 	
-	public static final String HUPM_SPOT = "spot";
-	
-	public static final String HUPM_ROD = "rod";
+	public static final String HUMP_SPOT = "spot";
+
+	public static final String HUMP_ROD = "rod";
 
 	private String path;
 	
 	private String field;
 	
 	private String prefix;
-	
-	private Class<?> clazz;
-	
+
+	private Class<?> clazz; // 特指配置类的 clazz ，而无关字段或对象
+
 	private Object object;
-	
+
 	private String filePath;
-	
+
 	private boolean removePrefix;
-	
+
 	private boolean monitor;
-	
+
 	private String hump;
 	
 	Field objectField;
 	
 	Object instance;
-	
-	protected void  setObjectField(Field objectField) {
-		this.objectField = objectField;
-	}
-	
-	protected Field getObjectField() {
-		return this.objectField;
-	}
-	
-	protected void  setInstance(Object instance) {
-		this.instance = instance;
-	}
-	
-	protected Object getInstance() {
-		return this.instance;
-	}
-	
 }

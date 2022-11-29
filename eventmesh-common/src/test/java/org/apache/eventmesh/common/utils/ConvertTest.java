@@ -16,7 +16,7 @@ public class ConvertTest {
 		
 		ConfigInfo configInfo = new ConfigInfo();
 		configInfo.setClazz(ConvertEntity.class);
-		configInfo.setHump(ConfigInfo.HUPM_ROD);
+		configInfo.setHump(ConfigInfo.HUMP_ROD);
 		Properties properties = new Properties();
 		properties.put("byte_value", "1");
 		properties.put("short_value", "2");

@@ -65,6 +65,7 @@ public class PushConsumerImpl {
     public PushConsumerImpl(final Properties properties) {
         this.rocketmqPushConsumer = new DefaultMQPushConsumer();
         this.properties = properties;
+        // todo 5. 改造一下获取配置文件的方式
         this.clientConfig = BeanUtils.populate(properties, ClientConfig.class);
 
         String accessPoints = clientConfig.getAccessPoints();
