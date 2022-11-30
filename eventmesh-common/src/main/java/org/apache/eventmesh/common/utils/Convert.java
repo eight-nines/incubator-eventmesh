@@ -90,16 +90,17 @@ public class Convert {
 	// 复杂类型解析，如 EventMeshHTTPConfiguration
 	private class ConvertObject implements ConvertValue<Object> {
 
-		private String prefix;
+		private String prefix; // 配置键前缀，以.结尾
 		
-		private ConvertInfo convertInfo;
+		private ConvertInfo convertInfo; // 要转换的信息
 		
-		private Object object;
+		private Object object; // 配置类型实例，也是最终转换的结果
 		
-		private char hump;
+		private char hump; // 驼峰连接符
 		
-		private Class<?> clazz;
-		
+		private Class<?> clazz; // 配置类 clazz
+
+		// 初始化 ConvertObject 属性
 		private void init(ConfigInfo configInfo) {
 			String prefix = configInfo.getPrefix();
 			if(Objects.nonNull(prefix)) {
@@ -114,17 +115,17 @@ public class Convert {
 		public Object convert(ConvertInfo convertInfo) {
 			try {
 				this.convertInfo = convertInfo;
-				this.object = convertInfo.getClazz().newInstance(); // 配置类实例化
 				this.init(convertInfo.getConfigInfo());
 				this.setValue();
 
-				Class<?> sperclass = convertInfo.getClazz();
+				// 向上赋值属性
+				Class<?> superclass = convertInfo.getClazz();
 				for( ; ; ) {
-					sperclass = sperclass.getSuperclass();
-					if(Objects.equals(sperclass, Object.class) || Objects.isNull(sperclass)) {
+					superclass = superclass.getSuperclass();
+					if(Objects.equals(superclass, Object.class) || Objects.isNull(superclass)) {
 						break;
 					}
-					this.clazz = sperclass;
+					this.clazz = superclass;
 					this.setValue();
 				}
 				
@@ -135,12 +136,14 @@ public class Convert {
 		}
 		
 		private void setValue() throws Exception {
+			// 遍历 配置类 的属性，一一赋值
 			for(Field field : this.clazz.getDeclaredFields()) {
-				
+				// static 字段不管理
 				if(Modifier.isStatic(field.getModifiers())) {
 					continue;
 				}
 				field.setAccessible(true);
+
 				ConvertInfo convertInfo = this.convertInfo;
 				String key = this.getKey(field.getName(), hump);
 				Class<?> clazz = field.getType();
@@ -184,34 +187,39 @@ public class Convert {
 					}
 					continue;
 				}
-				field.set(object,  value);
+				field.set(object,  value); // 回写 object
 			}
 		}
-		
-		public String getKey(String fieldName , char spot) {
-			StringBuffer key = new StringBuffer(Objects.isNull(prefix)?"":prefix);
 
-			boolean currency = false;
-			for(int i = 0 ; i< fieldName.length() ; i++) {
+		// 拼接配置文件中的 键，就是 字段名 -> 配置文件的键 如 httpServerPort -> http.server.port
+		// 连着两个大写，或最后一个大写 拼接为大写 如 ttp.server.P.port
+		public String getKey(String fieldName , char spot) {
+			// todo 1. key 应该不属于竞争资源，不需要同步吧？   2，删除分支一一个多的 append
+			StringBuilder key = new StringBuilder(Objects.isNull(prefix)?"":prefix);
+
+			boolean currency = false; // 当前字符是否是大写，属性首字符小写 false
+			int length = fieldName.length();
+			for(int i = 0 ; i< length ; i++) {
 				char c = fieldName.charAt(i);
+				boolean b = i<length-1 && fieldName.charAt(i + 1) > 96;
+				// i<length-1 不是最后一个 ； 后一个字母是小写
 				if(currency) {
-					if(fieldName.length() > (i + 1 )&& fieldName.charAt(i+1) > 96) {
-						key.append(spot);
+					if(b) {
+						key.append(spot); // 后面有小写，先加 . 再加小写
 						key.append((char)(c + 32));
 						currency = false;
-					}else {
+					}else { // 连着两个大写，或最后一个大写 加大写？
 						key.append(c);
 					}
-					key.append(c);
 				}else {
-					if(c >96) {
+					if(c >96) { // 小写直接加
 						key.append(c);
 					}else {
-						key.append(spot);
-						if(fieldName.length() > (i + 1 ) && fieldName.charAt(i+1) > 96) {
-							key.append((char)(c + 32));
+						key.append(spot); // 大写先加 .
+						if(b) {
+							key.append((char)(c + 32)); // 后面有小写，加小写
 						}else {
-							key.append(c);
+							key.append(c); // 连着两个大写，或最后一个大写 加大写？
 							currency = true;
 						}
 						
