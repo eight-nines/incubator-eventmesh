@@ -1,5 +1,8 @@
 package org.apache.eventmesh.common.utils;
 
+import inet.ipaddr.AddressStringException;
+import inet.ipaddr.IPAddress;
+import inet.ipaddr.IPAddressString;
 import org.apache.eventmesh.common.config.ConfigFiled;
 import org.apache.eventmesh.common.config.ConfigInfo;
 import org.apache.eventmesh.common.config.NotNull;
@@ -18,11 +21,11 @@ import com.google.common.base.Preconditions;
 import lombok.Data;
 
 public class Convert {
-	
+
 	private Map<Class<?> ,ConvertValue<?> > classToConvert = new HashMap<Class<?>, ConvertValue<?>>();
 
 	private ConvertValue<?> convertEnum = new ConvertEnum();
-	
+
 	{
 		this.register(new ConvertCharacter(), Character.class , char.class);
 		this.register(new ConvertByte(), Byte.class , byte.class);
@@ -38,9 +41,9 @@ public class Convert {
 		this.register(new ConvertLocalDateTime(), LocalDateTime.class);
 		this.register(new ConvertList(), List.class , ArrayList.class,LinkedList.class,Vector.class);
 		this.register(new ConvertMap(), Map.class , HashMap.class,TreeMap.class,LinkedHashMap.class);
-		
+		this.register(new ConvertIPAddress(), IPAddress.class);
 	}
-	
+
 	public Object createObject(ConfigInfo configInfo,Properties properties) {
 		ConvertInfo convertInfo = new ConvertInfo();
 		convertInfo.setConfigInfo(configInfo);
@@ -57,7 +60,7 @@ public class Convert {
 		ConvertObject convertObject = new ConvertObject();
 		return convertObject.convert(convertInfo);
 	}
-	
+
 
 	public void register(ConvertValue<?> convertValue , Class<?>... clazzs) {
 		for(Class<?> clazz : clazzs) {
@@ -67,11 +70,11 @@ public class Convert {
 
 	// 把 ConvertInfo 转换为 T 类型
 	public interface ConvertValue<T>{
-		
+
 		public default boolean isNotHandleNullValue() {
 			return true;
 		}
-		
+
 		public T convert(ConvertInfo convertInfo );
 	}
 
@@ -79,13 +82,13 @@ public class Convert {
 	private class ConvertObject implements ConvertValue<Object> {
 
 		private String prefix; // 配置键前缀，以.结尾
-		
+
 		private ConvertInfo convertInfo; // 要转换的信息
-		
+
 		private Object object; // 配置类型实例，也是最终转换的结果
-		
+
 		private char hump; // 驼峰连接符
-		
+
 		private Class<?> clazz; // 配置类 clazz
 
 		// 初始化 ConvertObject 属性
@@ -98,7 +101,7 @@ public class Convert {
 			this.clazz = convertInfo.getClazz();
 			this.convertInfo.setHump(this.hump);
 		}
-		
+
 		@Override // 配置转换方法，从 主配置文件，解析出 Object 如 EventMeshHTTPConfiguration 对象
 		public Object convert(ConvertInfo convertInfo) {
 			try {
@@ -117,13 +120,13 @@ public class Convert {
 					this.clazz = superclass;
 					this.setValue();
 				}
-				
+
 				return object;
 			}catch(Exception e) {
 				throw new RuntimeException(e);
 			}
 		}
-		
+
 		private void setValue() throws Exception {
 			Boolean needReload = Boolean.FALSE; // 配置类 clazz
 
@@ -179,7 +182,7 @@ public class Convert {
 				convertInfo.setField(field);
 				convertInfo.setKey(key);
 				Object value = convertValue.convert(convertInfo);
-				
+
 				if(Objects.isNull(value)) {
 					NotNull notNull = field.getAnnotation(NotNull.class);
 					if(Objects.nonNull(notNull)) {
@@ -228,7 +231,7 @@ public class Convert {
 							key.append(c); // 连着两个大写，或最后一个大写 加大写？
 							currency = true;
 						}
-						
+
 					}
 				}
 			}
@@ -237,10 +240,10 @@ public class Convert {
 			}
 			return key.toString().toLowerCase(Locale.ROOT);
 		}
-		
-		
+
+
 	}
-	
+
 	private class ConvertCharacter implements ConvertValue<Character>{
 
 		@Override
@@ -248,7 +251,7 @@ public class Convert {
 			return convertInfo.getValue().charAt(0);
 		}
 	}
-	
+
 	private class ConvertBoolean implements ConvertValue<Boolean>{
 
 		@Override
@@ -259,7 +262,7 @@ public class Convert {
 			return Boolean.valueOf(convertInfo.getValue());
 		}
 	}
-	
+
 	private class ConvertByte implements ConvertValue<Byte>{
 
 		@Override
@@ -267,7 +270,7 @@ public class Convert {
 			return Byte.valueOf(convertInfo.getValue());
 		}
 	}
-	
+
 	private class ConvertShort implements ConvertValue<Short>{
 
 		@Override
@@ -275,7 +278,7 @@ public class Convert {
 			return Short.valueOf(convertInfo.getValue());
 		}
 	}
-	
+
 	private class ConvertInteger implements ConvertValue<Integer>{
 
 		@Override
@@ -283,7 +286,7 @@ public class Convert {
 			return Integer.valueOf(convertInfo.getValue());
 		}
 	}
-	
+
 	private class ConvertLong implements ConvertValue<Long>{
 
 		@Override
@@ -291,7 +294,7 @@ public class Convert {
 			return Long.valueOf(convertInfo.getValue());
 		}
 	}
-	
+
 	private class ConvertFloat implements ConvertValue<Float>{
 
 		@Override
@@ -299,7 +302,7 @@ public class Convert {
 			return Float.valueOf(convertInfo.getValue());
 		}
 	}
-	
+
 	private class ConvertDouble implements ConvertValue<Double>{
 
 		@Override
@@ -307,7 +310,7 @@ public class Convert {
 			return Double.valueOf(convertInfo.getValue());
 		}
 	}
-	
+
 	private class ConvertString implements ConvertValue<String>{
 
 		@Override
@@ -315,7 +318,7 @@ public class Convert {
 			return convertInfo.getValue();
 		}
 	}
-	
+
 	private class ConvertDate implements ConvertValue<Date>{
 
 		@Override
@@ -328,25 +331,25 @@ public class Convert {
 			}
 		}
 	}
-	
+
 	private class ConvertLocalDate implements ConvertValue<LocalDate>{
 
 		@Override
 		public LocalDate convert(ConvertInfo convertInfo) {
 			return LocalDate.parse(convertInfo.getValue(), DateTimeFormatter.ofPattern("yyyy-MM-dd"));
 		}
-		
+
 	}
-	
+
 	private class ConvertLocalDateTime implements ConvertValue<LocalDateTime>{
 
 		@Override
 		public LocalDateTime convert(ConvertInfo convertInfo) {
 			return LocalDateTime.parse(convertInfo.getValue(), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
 		}
-		
+
 	}
-	
+
 	private class ConvertEnum implements ConvertValue<Enum<?>>{
 
 		@SuppressWarnings({ "unchecked", "rawtypes" })
@@ -354,19 +357,22 @@ public class Convert {
 		public Enum<?> convert(ConvertInfo convertInfo) {
 			return Enum.valueOf((Class<Enum>) convertInfo.getField().getType(), convertInfo.getValue());
 		}
-		
+
 	}
-	
+
 	private class ConvertList implements ConvertValue<List<Object>>{
 
 		public boolean isNotHandleNullValue() {
 			return false;
 		}
-		
+
 		@SuppressWarnings("unchecked")
 		@Override
 		public List<Object> convert(ConvertInfo convertInfo) {
 			try {
+				if(convertInfo.getValue()==null ){
+					return new ArrayList<>();
+				}
 				String[] values = convertInfo.getValue().split(",");
 				List<Object> list;
 				if(Objects.equals(convertInfo.getField().getType(), List.class)) {
@@ -389,16 +395,16 @@ public class Convert {
 				return list;
 			} catch (Exception e) {
 				throw new RuntimeException(e);
-			}	
+			}
 		}
 	}
-	
+
 	private class ConvertMap implements ConvertValue<Map<String,Object>>{
 
 		public boolean isNotHandleNullValue() {
 			return false;
 		}
-		
+
 		@SuppressWarnings("unchecked")
 		@Override
 		public Map<String,Object> convert(ConvertInfo convertInfo) {
@@ -426,15 +432,27 @@ public class Convert {
 				return map;
 			} catch (Exception e) {
 				throw new RuntimeException(e);
-			}	
+			}
 		}
 	}
-	
+
+	private class ConvertIPAddress implements ConvertValue<IPAddress>{
+
+		@Override
+		public IPAddress convert(ConvertInfo convertInfo) {
+			try {
+				return new IPAddressString(convertInfo.getValue()).toAddress();
+			} catch (AddressStringException e) {
+				throw new RuntimeException(e);
+			}
+		}
+	}
+
 
 	@Data // 代表一个要被转换的 字段
 	class ConvertInfo{
-		Class<?>  clazz ; 
-		String value; 
+		Class<?>  clazz ;
+		String value;
 		String key;
 		Properties properties;
 		Field field;

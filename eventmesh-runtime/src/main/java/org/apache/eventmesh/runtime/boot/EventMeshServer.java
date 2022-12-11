@@ -56,6 +56,12 @@ public class EventMeshServer {
     private ServiceState serviceState;
 
     public EventMeshServer() {
+        this(null,null,null);
+    }
+
+    public EventMeshServer(EventMeshHTTPConfiguration eventMeshHttpConfiguration,
+                           EventMeshTCPConfiguration eventMeshTCPConfiguration,
+                           EventMeshGrpcConfiguration eventMeshGrpcConfiguration) {
     	ConfigService configService = ConfigService.getInstance();
         this.eventMeshHttpConfiguration = configService.getConfig(EventMeshHTTPConfiguration.class);
         this.eventMeshTCPConfiguration = configService.getConfig(EventMeshTCPConfiguration.class);
