@@ -1,19 +1,18 @@
-package org.apache.eventmesh.connector.rocketmq.consumer;
+package org.apache.eventmesh.connector.rocketmq.producer;
 
 import org.apache.eventmesh.common.config.ConfigService;
 import org.apache.eventmesh.connector.rocketmq.config.ClientConfiguration;
+import org.apache.eventmesh.connector.rocketmq.consumer.RocketMQConsumerImpl;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.util.Properties;
-
 import static org.junit.Assert.*;
 
-public class RocketMQConsumerImplTest {
+public class RocketMQProducerImplTest {
 
     @Test
     public void getConfigWhenSPIInit() throws Exception {
-        RocketMQConsumerImpl extensionInstance = RocketMQConsumerImpl.class.newInstance();
+        RocketMQProducerImpl extensionInstance = RocketMQProducerImpl.class.newInstance();
 
         ConfigService configService = ConfigService.getInstance();
         configService.setRootConfig("classPath://rocketmq-client.properties");

@@ -21,6 +21,7 @@ import org.apache.eventmesh.api.RequestReplyCallback;
 import org.apache.eventmesh.api.SendCallback;
 import org.apache.eventmesh.api.SendResult;
 import org.apache.eventmesh.api.producer.Producer;
+import org.apache.eventmesh.common.config.Config;
 import org.apache.eventmesh.connector.rocketmq.common.EventMeshConstants;
 import org.apache.eventmesh.connector.rocketmq.config.ClientConfiguration;
 
@@ -36,14 +37,16 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @SuppressWarnings("deprecation")
+@Config(field = "clientConfiguration" , prefix = "")
 public class RocketMQProducerImpl implements Producer {
 
     private ProducerImpl producer;
 
+    private ClientConfiguration clientConfiguration;
+
     @Override
     public synchronized void init(Properties keyValue) {
-        final ClientConfiguration clientConfiguration = new ClientConfiguration();
-        clientConfiguration.init();
+//        clientConfiguration.init();
         String producerGroup = keyValue.getProperty("producerGroup");
 
         String omsNamesrv = clientConfiguration.namesrvAddr;
@@ -122,5 +125,7 @@ public class RocketMQProducerImpl implements Producer {
         producer.sendAsync(message, sendCallback);
     }
 
-
+    public ClientConfiguration getClientConfiguration() {
+        return clientConfiguration;
+    }
 }
