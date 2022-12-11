@@ -1,32 +1,19 @@
 package org.apache.eventmesh.common.utils;
 
+import org.apache.eventmesh.common.config.ConfigFiled;
 import org.apache.eventmesh.common.config.ConfigInfo;
 import org.apache.eventmesh.common.config.NotNull;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
+import java.lang.reflect.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
 
 import com.google.common.base.Preconditions;
-
-import java.util.Objects;
-import java.util.Properties;
-import java.util.TreeMap;
-import java.util.Vector;
 
 import lombok.Data;
 
@@ -77,7 +64,8 @@ public class Convert {
 			classToConvert.put(clazz, convertValue);
 		}
 	}
-	
+
+	// 把 ConvertInfo 转换为 T 类型
 	public interface ConvertValue<T>{
 		
 		public default boolean isNotHandleNullValue() {
@@ -115,8 +103,9 @@ public class Convert {
 		public Object convert(ConvertInfo convertInfo) {
 			try {
 				this.convertInfo = convertInfo;
+				this.object = convertInfo.getClazz().newInstance(); // 配置类实例化
 				this.init(convertInfo.getConfigInfo());
-				this.setValue();
+				this.setValue(); // 配置赋值
 
 				// 向上赋值属性
 				Class<?> superclass = convertInfo.getClazz();
@@ -136,6 +125,8 @@ public class Convert {
 		}
 		
 		private void setValue() throws Exception {
+			Boolean needReload = Boolean.FALSE; // 配置类 clazz
+
 			// 遍历 配置类 的属性，一一赋值
 			for(Field field : this.clazz.getDeclaredFields()) {
 				// static 字段不管理
@@ -143,9 +134,18 @@ public class Convert {
 					continue;
 				}
 				field.setAccessible(true);
-
+				// 复用单例
 				ConvertInfo convertInfo = this.convertInfo;
-				String key = this.getKey(field.getName(), hump);
+				String key;
+				ConfigFiled configFiled = field.getAnnotation(ConfigFiled.class);
+				if(configFiled==null || configFiled.field().equals("")){
+					key = this.getKey(field.getName(), hump);
+				}else {
+					key = configFiled.field();
+				}
+				if(!needReload && configFiled!=null && configFiled.reload()){
+					needReload = Boolean.TRUE;
+				}
 				Class<?> clazz = field.getType();
 				ConvertValue<?> convertValue = classToConvert.get(clazz);
 				if(clazz.isEnum()) {
@@ -189,12 +189,18 @@ public class Convert {
 				}
 				field.set(object,  value); // 回写 object
 			}
+
+			if(!needReload) return;
+			Method method = this.clazz.getDeclaredMethod("reload", null);
+			method.setAccessible(true);
+			method.invoke(this.object, null);
 		}
 
 		// 拼接配置文件中的 键，就是 字段名 -> 配置文件的键 如 httpServerPort -> http.server.port
 		// 连着两个大写，或最后一个大写 拼接为大写 如 ttp.server.P.port
 		public String getKey(String fieldName , char spot) {
 			// todo 1. key 应该不属于竞争资源，不需要同步吧？   2，删除分支一一个多的 append
+			// todo 专有名词的解析， eventMesh 不能切分，IDC 这种全大写缩写，也不能切分
 			StringBuilder key = new StringBuilder(Objects.isNull(prefix)?"":prefix);
 
 			boolean currency = false; // 当前字符是否是大写，属性首字符小写 false
@@ -225,8 +231,11 @@ public class Convert {
 						
 					}
 				}
-			}			
-			return key.toString();
+			}
+			if(fieldName.startsWith("eventMesh")){
+				key.replace(0,10,"eventMesh");
+			}
+			return key.toString().toLowerCase(Locale.ROOT);
 		}
 		
 		
@@ -244,10 +253,10 @@ public class Convert {
 
 		@Override
 		public Boolean convert(ConvertInfo convertInfo) {
-			if(Objects.equals(convertInfo.getKey().length(), 1)) {
-				return Objects.equals(convertInfo.getKey(), "1")?true:false;
+			if(Objects.equals(convertInfo.getValue().length(), 1)) {
+				return Objects.equals(convertInfo.getValue(), "1")?Boolean.TRUE:Boolean.FALSE;
 			}
-			return Boolean.valueOf(convertInfo.getKey());
+			return Boolean.valueOf(convertInfo.getValue());
 		}
 	}
 	
@@ -358,26 +367,25 @@ public class Convert {
 		@Override
 		public List<Object> convert(ConvertInfo convertInfo) {
 			try {
-				String key = convertInfo.getKey() +"[";
+				String[] values = convertInfo.getValue().split(",");
 				List<Object> list;
 				if(Objects.equals(convertInfo.getField().getType(), List.class)) {
 					list = new ArrayList<>();
 				}else {
 					list = (List<Object>) convertInfo.getField().getType().newInstance();
 				}
+
 				Type parameterizedType =  ((ParameterizedType)convertInfo.getField().getGenericType()).getActualTypeArguments()[0];
 				ConvertValue<?> convert = classToConvert.get(parameterizedType);
 				if(Objects.isNull(convert)) {
 					throw new RuntimeException("convert is null");
 				}
-				for(Entry<Object, Object> entry : convertInfo.getProperties().entrySet()) {
-					String propertiesKey = entry.getKey().toString();
-					if(propertiesKey.startsWith(key)) {
-						String value = entry.getValue().toString();
-						convertInfo.setValue(value);
-						list.add(convert.convert(convertInfo));
-					}
+
+				for(String value : values) {
+					convertInfo.setValue(value);
+					list.add(convert.convert(convertInfo));
 				}
+
 				return list;
 			} catch (Exception e) {
 				throw new RuntimeException(e);
@@ -422,8 +430,8 @@ public class Convert {
 		}
 	}
 	
-	
-	@Data
+
+	@Data // 代表一个要被转换的 字段
 	class ConvertInfo{
 		Class<?>  clazz ; 
 		String value; 

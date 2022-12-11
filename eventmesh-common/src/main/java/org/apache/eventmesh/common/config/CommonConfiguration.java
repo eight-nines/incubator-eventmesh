@@ -29,31 +29,56 @@ import java.util.stream.Collectors;
 import com.google.common.base.Preconditions;
 
 public class CommonConfiguration {
+    @ConfigFiled(field = "eventMesh.server.env")
     public String eventMeshEnv                 = "P";
+    @ConfigFiled(field = "eventMesh.server.idc")
     public String eventMeshIDC                 = "FT";
+    @ConfigFiled(field = "eventMesh.server.cluster")
     public String eventMeshCluster             = "LS";
+    @ConfigFiled(field = "eventMesh.server.name")
     public String eventMeshName                = "";
+    @ConfigFiled(field = "eventMesh.sysid")
     public String sysID                        = "5477";
+    @ConfigFiled(field = "eventMesh.connector.plugin.type")
     public String eventMeshConnectorPluginType = "rocketmq";
+    @ConfigFiled(field = "eventMesh.security.plugin.type")
     public String eventMeshSecurityPluginType  = "security";
+    @ConfigFiled(field = "eventMesh.registry.plugin.type")
     public String eventMeshRegistryPluginType  = "namesrv";
 
+    @ConfigFiled(field = "eventMesh.metrics.plugin") // todo
     public List<String> eventMeshMetricsPluginType;
+    @ConfigFiled(field = "eventMesh.trace.plugin")
     public String       eventMeshTracePluginType;
 
+    @ConfigFiled(field = "")
     public    String               namesrvAddr                        = "";
+    @ConfigFiled(field = "")
     public    Integer              eventMeshRegisterIntervalInMills   = 10 * 1000;
+    @ConfigFiled(field = "")
     public    Integer              eventMeshFetchRegistryAddrInterval = 10 * 1000;
+    @ConfigFiled(field = "eventMesh.server.hostIp")
     public    String               eventMeshServerIp                  = null;
+    @ConfigFiled(field = "eventMesh.server.security.enabled")
     public    boolean              eventMeshServerSecurityEnable      = false;
+    @ConfigFiled(field = "eventMesh.server.registry.enabled")
     public    boolean              eventMeshServerRegistryEnable      = false;
+    @ConfigFiled(field = "eventMesh.server.trace.enabled")
     public    boolean              eventMeshServerTraceEnable         = false;
     protected ConfigurationWrapper configurationWrapper;
 
+    @ConfigFiled(field = "",reload = true)
     public String eventMeshWebhookOrigin = "eventmesh." + eventMeshIDC;
 
     public CommonConfiguration(ConfigurationWrapper configurationWrapper) {
         this.configurationWrapper = configurationWrapper;
+    }
+
+    public CommonConfiguration() {
+    }
+
+    public void reload() {
+        this.eventMeshWebhookOrigin = "eventmesh." + eventMeshIDC;
     }
 
     public void init() {
@@ -121,20 +146,20 @@ public class CommonConfiguration {
     }
 
     static class ConfKeys {
-        public static String KEYS_EVENTMESH_ENV = "eventMesh.server.env";
+        public static String KEYS_EVENTMESH_ENV = "eventMesh.server.env"; //eventMeshServerEnv
 
-        public static String KEYS_EVENTMESH_IDC = "eventMesh.server.idc";
+        public static String KEYS_EVENTMESH_IDC = "eventMesh.server.idc"; //eventMeshServerIDC
 
-        public static String KEYS_EVENTMESH_SYSID = "eventMesh.sysid";
+        public static String KEYS_EVENTMESH_SYSID = "eventMesh.sysid"; //eventMeshSysid
 
-        public static String KEYS_EVENTMESH_SERVER_CLUSTER = "eventMesh.server.cluster";
+        public static String KEYS_EVENTMESH_SERVER_CLUSTER = "eventMesh.server.cluster"; //eventMeshServerCluster
 
-        public static String KEYS_EVENTMESH_SERVER_NAME = "eventMesh.server.name";
+        public static String KEYS_EVENTMESH_SERVER_NAME = "eventMesh.server.name"; //eventMeshServerName
 
-        public static String KEYS_EVENTMESH_SERVER_HOST_IP = "eventMesh.server.hostIp";
+        public static String KEYS_EVENTMESH_SERVER_HOST_IP = "eventMesh.server.hostIp"; //eventMeshServerHostip
 
         public static String KEYS_EVENTMESH_SERVER_REGISTER_INTERVAL =
-                "eventMesh.server.registry.registerIntervalInMills";
+                "eventMesh.server.registry.registerIntervalInMills"; //eventMeshServerRegistryRegisterintervalinmills
 
         public static String KEYS_EVENTMESH_SERVER_FETCH_REGISTRY_ADDR_INTERVAL =
                 "eventMesh.server.registry.fetchRegistryAddrIntervalInMills";

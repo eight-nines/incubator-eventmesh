@@ -1,9 +1,10 @@
 package org.apache.eventmesh.common.config;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.io.File;
 import java.lang.reflect.Field;
-import java.util.Objects;
-import java.util.Properties;
+import java.util.*;
 
 
 public class ConfigService {
@@ -32,6 +33,7 @@ public class ConfigService {
 		ConfigInfo configInfo = new ConfigInfo();
 		configInfo.setPath(path);
 		properties = this.getConfig(configInfo);
+//		properties = transformLowerCase(properties);
 		return this;
 	}
 
@@ -102,4 +104,18 @@ public class ConfigService {
 		return (T) object;
 	}
 
+	// 将map值全部转换为小写
+	public static Properties transformLowerCase(Properties orgMap) {
+		Properties properties = new Properties();
+		if (orgMap == null || orgMap.isEmpty()) {
+			return properties;
+		}
+		Set<Object> keySet = orgMap.keySet();
+		for (Object key : keySet) {
+			String key1 = (String) key;
+			String newKey = key1.toLowerCase(Locale.ROOT);
+			properties.put(newKey, orgMap.get(key));
+		}
+		return properties;
+	}
 }
