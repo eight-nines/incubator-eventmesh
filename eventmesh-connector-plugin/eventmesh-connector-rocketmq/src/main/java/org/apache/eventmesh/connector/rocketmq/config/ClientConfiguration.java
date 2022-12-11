@@ -20,24 +20,56 @@ package org.apache.eventmesh.connector.rocketmq.config;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.common.base.Preconditions;
+import org.apache.eventmesh.common.config.ConfigFiled;
 
 public class ClientConfiguration {
 
+    @ConfigFiled(field = "eventMesh.server.rocketmq.namesrvAddr")
     public String namesrvAddr = "";
+
+    @ConfigFiled(field = "eventMesh.server.rocketmq.username")
     public String clientUserName = "username";
+
+    @ConfigFiled(field = "eventMesh.server.rocketmq.password")
     public String clientPass = "password";
+
+    @ConfigFiled(field = "eventMesh.server.rocketmq.client.consumeThreadMin")
     public Integer consumeThreadMin = 2;
+
+    @ConfigFiled(field = "eventMesh.server.rocketmq.client.consumeThreadMax")
     public Integer consumeThreadMax = 2;
+
+    @ConfigFiled(field = "eventMesh.server.rocketmq.client.consumeThreadPoolQueueSize")
     public Integer consumeQueueSize = 10000;
+
+    @ConfigFiled(field = "eventMesh.server.rocketmq.client.pullBatchSize")
     public Integer pullBatchSize = 32;
+
+    @ConfigFiled(field = "eventMesh.server.rocketmq.client.ackwindow")
     public Integer ackWindow = 1000;
+
+    @ConfigFiled(field = "eventMesh.server.rocketmq.client.pubwindow")
     public Integer pubWindow = 100;
+
+    @ConfigFiled(field = "eventMesh.server.rocketmq.client.comsumeTimeoutInMin")
     public long consumeTimeout = 0L;
+
+    @ConfigFiled(field = "eventMesh.server.rocketmq.client.pollNameServerInterval")
     public Integer pollNameServerInterval = 10 * 1000;
+
+    @ConfigFiled(field = "eventMesh.server.rocketmq.client.heartbeatBrokerInterval")
     public Integer heartbeatBrokerInterval = 30 * 1000;
+
+    @ConfigFiled(field = "eventMesh.server.rocketmq.client.rebalanceInterval")
     public Integer rebalanceInterval = 20 * 1000;
+
+    @ConfigFiled(field = "eventMesh.server.rocketmq.cluster")
     public String clusterName = "";
+
+    @ConfigFiled(field = "eventMesh.server.rocketmq.accessKey")
     public String accessKey = "";
+
+    @ConfigFiled(field = "eventMesh.server.rocketmq.secretKey")
     public String secretKey = "";
     
     private Client client;
@@ -46,7 +78,6 @@ public class ClientConfiguration {
     	
     }
 
-    // todo 4.修改后可以删除
     public void init() {
 
         String clientUserNameStr = ConfigurationWrapper.getProp(ConfKeys.KEYS_EVENTMESH_ROCKETMQ_USERNAME);

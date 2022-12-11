@@ -175,7 +175,7 @@ public class EventMeshServerTest extends TestCase {
 
 
     /**
-     * 启动时测需设置环境变量
+     * True 启动时测需设置环境变量
      */
     public void testGetConfigWhenStartup() throws Exception {
 

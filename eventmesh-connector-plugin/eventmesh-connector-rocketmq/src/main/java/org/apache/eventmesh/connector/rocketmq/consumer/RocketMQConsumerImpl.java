@@ -21,6 +21,7 @@ import org.apache.eventmesh.api.AbstractContext;
 import org.apache.eventmesh.api.EventListener;
 import org.apache.eventmesh.api.consumer.Consumer;
 import org.apache.eventmesh.common.config.Config;
+import org.apache.eventmesh.common.config.ConfigFiled;
 import org.apache.eventmesh.connector.rocketmq.common.Constants;
 import org.apache.eventmesh.connector.rocketmq.config.ClientConfiguration;
 
@@ -116,4 +117,7 @@ public class RocketMQConsumerImpl implements Consumer {
         return pushConsumer.attributes();
     }
 
+    public ClientConfiguration getClientConfiguration() {
+        return clientConfiguration;
+    }
 }

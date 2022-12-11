@@ -27,4 +27,8 @@ public class ConfigurationWrapperTest {
         String namesrcAddr = ConfigurationWrapper.getProp("eventMesh.server.rocketmq.namesrvAddr");
         Assert.assertNotNull(namesrcAddr);
     }
+
+
+
+
 }

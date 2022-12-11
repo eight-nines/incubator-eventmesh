@@ -40,8 +40,7 @@ public class ConfigService {
 
 	public void getConfig(Object object, Class<?> clazz) throws Exception {
 		Config[] configArray = clazz.getAnnotationsByType(Config.class);
-		if (configArray == null || configArray.length == 0) {
-			//TODO
+		if (configArray.length == 0) {
 			return;
 		}
 		for (Config config : configArray) {
@@ -82,7 +81,7 @@ public class ConfigService {
 	@SuppressWarnings("unchecked")
 	public <T> T getConfig(ConfigInfo configInfo) throws Exception {
 		Object object;
-		if (Objects.isNull(configInfo.getPath())) {
+		if (Objects.isNull(configInfo.getPath()) || StringUtils.isEmpty(configInfo.getPath().trim())) {
 			object = FileLoad.getPropertiesFileLoad().getConfig(properties, configInfo); // 从主配置文件中解析
 		} else {
 			String path = configInfo.getPath();

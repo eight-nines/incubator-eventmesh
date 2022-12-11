@@ -24,6 +24,7 @@ import org.apache.eventmesh.api.EventMeshAction;
 import org.apache.eventmesh.api.EventMeshAsyncConsumeContext;
 import org.apache.eventmesh.api.exception.ConnectorRuntimeException;
 import org.apache.eventmesh.common.Constants;
+import org.apache.eventmesh.common.config.Config;
 import org.apache.eventmesh.connector.rocketmq.cloudevent.RocketMQMessageFactory;
 import org.apache.eventmesh.connector.rocketmq.common.EventMeshConstants;
 import org.apache.eventmesh.connector.rocketmq.config.ClientConfig;
@@ -65,7 +66,6 @@ public class PushConsumerImpl {
     public PushConsumerImpl(final Properties properties) {
         this.rocketmqPushConsumer = new DefaultMQPushConsumer();
         this.properties = properties;
-        // todo 5. 改造一下获取配置文件的方式
         this.clientConfig = BeanUtils.populate(properties, ClientConfig.class);
 
         String accessPoints = clientConfig.getAccessPoints();
