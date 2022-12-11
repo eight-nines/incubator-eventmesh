@@ -1,5 +1,6 @@
 package org.apache.eventmesh.runtime.boot;
 
+import inet.ipaddr.AddressStringException;
 import inet.ipaddr.IPAddress;
 import inet.ipaddr.IPAddressString;
 import junit.framework.TestCase;
@@ -8,12 +9,17 @@ import org.apache.eventmesh.common.config.ConfigService;
 import org.apache.eventmesh.runtime.configuration.EventMeshGrpcConfiguration;
 import org.apache.eventmesh.runtime.configuration.EventMeshHTTPConfiguration;
 import org.apache.eventmesh.runtime.configuration.EventMeshTCPConfiguration;
+import org.apache.eventmesh.runtime.constants.EventMeshConstants;
 import org.junit.Assert;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 public class EventMeshServerTest extends TestCase {
+    public static Logger logger = LoggerFactory.getLogger(EventMeshServerTest.class);
 
     public void testGetConfigForEventMeshHTTPConfiguration() throws Exception {
 
@@ -22,30 +28,12 @@ public class EventMeshServerTest extends TestCase {
 
         EventMeshHTTPConfiguration config = configService.getConfig(EventMeshHTTPConfiguration.class);
 
-        Assert.assertEquals(config.eventMeshEnv, "env-succeed!!!");
-        Assert.assertEquals(config.eventMeshIDC, "idc-succeed!!!");
-        Assert.assertEquals(config.eventMeshCluster, "cluster-succeed!!!");
-        Assert.assertEquals(config.eventMeshName, "name-succeed!!!");
-        Assert.assertEquals(config.sysID, "sysid-succeed!!!");
-        Assert.assertEquals(config.eventMeshConnectorPluginType, "connector-succeed!!!");
-        Assert.assertEquals(config.eventMeshSecurityPluginType, "security-succeed!!!");
-        Assert.assertEquals(config.eventMeshRegistryPluginType, "registry-succeed!!!");
-        Assert.assertEquals(config.eventMeshTracePluginType, "trace-succeed!!!");
-        Assert.assertEquals(config.eventMeshServerIp, "hostIp-succeed!!!");
+        assertCommonConfig(config);
 
-        List<String> list = new ArrayList<>();
-        list.add("metrics-succeed1!!!");
-        list.add("metrics-succeed2!!!");
-        list.add("metrics-succeed3!!!");
-        Assert.assertEquals(config.eventMeshMetricsPluginType, list);
+        assertHTTPConfig(config);
+    }
 
-        Assert.assertEquals(config.eventMeshServerSecurityEnable, Boolean.TRUE);
-        Assert.assertEquals(config.eventMeshServerRegistryEnable, Boolean.TRUE);
-        Assert.assertEquals(config.eventMeshServerTraceEnable, Boolean.TRUE);
-
-        Assert.assertEquals(config.eventMeshWebhookOrigin, "eventmesh.idc-succeed!!!");
-
-
+    private void assertHTTPConfig(EventMeshHTTPConfiguration config) throws AddressStringException {
         Assert.assertEquals(config.httpServerPort, 1816);
         Assert.assertEquals(config.eventMeshServerBatchMsgBatchEnabled, Boolean.FALSE);
         Assert.assertEquals(config.eventMeshServerBatchMsgThreadNum, 2816);
@@ -79,8 +67,6 @@ public class EventMeshServerTest extends TestCase {
         list6.add(new IPAddressString("0:0:0:0:0:0:7f00:01").toAddress());
         list6.add(new IPAddressString("0:0:0:0:0:0:7f00:02").toAddress());
         Assert.assertEquals(config.eventMeshIpv6BlackList, list6);
-
-
     }
 
     public void testGetConfigForEventMeshGrpcConfiguration() throws Exception {
@@ -90,30 +76,12 @@ public class EventMeshServerTest extends TestCase {
 
         EventMeshGrpcConfiguration config = configService.getConfig(EventMeshGrpcConfiguration.class);
 
-        Assert.assertEquals(config.eventMeshEnv, "env-succeed!!!");
-        Assert.assertEquals(config.eventMeshIDC, "idc-succeed!!!");
-        Assert.assertEquals(config.eventMeshCluster, "cluster-succeed!!!");
-        Assert.assertEquals(config.eventMeshName, "name-succeed!!!");
-        Assert.assertEquals(config.sysID, "sysid-succeed!!!");
-        Assert.assertEquals(config.eventMeshConnectorPluginType, "connector-succeed!!!");
-        Assert.assertEquals(config.eventMeshSecurityPluginType, "security-succeed!!!");
-        Assert.assertEquals(config.eventMeshRegistryPluginType, "registry-succeed!!!");
-        Assert.assertEquals(config.eventMeshTracePluginType, "trace-succeed!!!");
-        Assert.assertEquals(config.eventMeshServerIp, "hostIp-succeed!!!");
+        assertCommonConfig(config);
 
-        List<String> list = new ArrayList<>();
-        list.add("metrics-succeed1!!!");
-        list.add("metrics-succeed2!!!");
-        list.add("metrics-succeed3!!!");
-        Assert.assertEquals(config.eventMeshMetricsPluginType, list);
+        assertGrpcConfig(config);
+    }
 
-        Assert.assertEquals(config.eventMeshServerSecurityEnable, Boolean.TRUE);
-        Assert.assertEquals(config.eventMeshServerRegistryEnable, Boolean.TRUE);
-        Assert.assertEquals(config.eventMeshServerTraceEnable, Boolean.TRUE);
-
-        Assert.assertEquals(config.eventMeshWebhookOrigin, "eventmesh.idc-succeed!!!");
-
-
+    private void assertGrpcConfig(EventMeshGrpcConfiguration config) {
         Assert.assertEquals(config.grpcServerPort, 816);
         Assert.assertEquals(config.eventMeshSessionExpiredInMills, 1816);
         Assert.assertEquals(config.eventMeshServerBatchMsgBatchEnabled, Boolean.FALSE);
@@ -146,30 +114,12 @@ public class EventMeshServerTest extends TestCase {
 
         EventMeshTCPConfiguration config = configService.getConfig(EventMeshTCPConfiguration.class);
 
-        Assert.assertEquals(config.eventMeshEnv, "env-succeed!!!");
-        Assert.assertEquals(config.eventMeshIDC, "idc-succeed!!!");
-        Assert.assertEquals(config.eventMeshCluster, "cluster-succeed!!!");
-        Assert.assertEquals(config.eventMeshName, "name-succeed!!!");
-        Assert.assertEquals(config.sysID, "sysid-succeed!!!");
-        Assert.assertEquals(config.eventMeshConnectorPluginType, "connector-succeed!!!");
-        Assert.assertEquals(config.eventMeshSecurityPluginType, "security-succeed!!!");
-        Assert.assertEquals(config.eventMeshRegistryPluginType, "registry-succeed!!!");
-        Assert.assertEquals(config.eventMeshTracePluginType, "trace-succeed!!!");
-        Assert.assertEquals(config.eventMeshServerIp, "hostIp-succeed!!!");
+        assertCommonConfig(config);
 
-        List<String> list = new ArrayList<>();
-        list.add("metrics-succeed1!!!");
-        list.add("metrics-succeed2!!!");
-        list.add("metrics-succeed3!!!");
-        Assert.assertEquals(config.eventMeshMetricsPluginType, list);
+        assertTCPConfig(config);
+    }
 
-        Assert.assertEquals(config.eventMeshServerSecurityEnable, Boolean.TRUE);
-        Assert.assertEquals(config.eventMeshServerRegistryEnable, Boolean.TRUE);
-        Assert.assertEquals(config.eventMeshServerTraceEnable, Boolean.TRUE);
-
-        Assert.assertEquals(config.eventMeshWebhookOrigin, "eventmesh.idc-succeed!!!");
-
-
+    private void assertTCPConfig(EventMeshTCPConfiguration config) {
         Assert.assertEquals(config.eventMeshTcpServerPort, 816);
         Assert.assertEquals(config.eventMeshTcpIdleAllSeconds, 1816);
         Assert.assertEquals(config.eventMeshTcpIdleWriteSeconds, 2816);
@@ -197,4 +147,62 @@ public class EventMeshServerTest extends TestCase {
         Assert.assertEquals(config.eventMeshEventSize, 22816);
         Assert.assertEquals(config.eventMeshEventBatchSize, 23816);
     }
+
+    private void assertCommonConfig(CommonConfiguration config) {
+        Assert.assertEquals(config.eventMeshEnv, "env-succeed!!!");
+        Assert.assertEquals(config.eventMeshIDC, "idc-succeed!!!");
+        Assert.assertEquals(config.eventMeshCluster, "cluster-succeed!!!");
+        Assert.assertEquals(config.eventMeshName, "name-succeed!!!");
+        Assert.assertEquals(config.sysID, "sysid-succeed!!!");
+        Assert.assertEquals(config.eventMeshConnectorPluginType, "connector-succeed!!!");
+        Assert.assertEquals(config.eventMeshSecurityPluginType, "security-succeed!!!");
+        Assert.assertEquals(config.eventMeshRegistryPluginType, "registry-succeed!!!");
+        Assert.assertEquals(config.eventMeshTracePluginType, "trace-succeed!!!");
+        Assert.assertEquals(config.eventMeshServerIp, "hostIp-succeed!!!");
+
+        List<String> list = new ArrayList<>();
+        list.add("metrics-succeed1!!!");
+        list.add("metrics-succeed2!!!");
+        list.add("metrics-succeed3!!!");
+        Assert.assertEquals(config.eventMeshMetricsPluginType, list);
+
+        Assert.assertEquals(config.eventMeshServerSecurityEnable, Boolean.TRUE);
+        Assert.assertEquals(config.eventMeshServerRegistryEnable, Boolean.TRUE);
+        Assert.assertEquals(config.eventMeshServerTraceEnable, Boolean.TRUE);
+
+        Assert.assertEquals(config.eventMeshWebhookOrigin, "eventmesh.idc-succeed!!!");
+    }
+
+
+    /**
+     * 启动时测需设置环境变量
+     */
+    public void testGetConfigWhenStartup() throws Exception {
+
+        testGetConfigWhenStartup(Boolean.FALSE);
+    }
+
+    private void testGetConfigWhenStartup(Boolean hasEnv) throws Exception {
+        String eventMeshConfFile = "newConfiguration-runtime.properties";
+
+        if (hasEnv) {
+            ConfigService.getInstance()
+                    .setConfigPath(EventMeshConstants.EVENTMESH_CONF_HOME + File.separator)
+                    .setRootConfig(eventMeshConfFile);
+        } else {
+            eventMeshConfFile = "classPath://" + eventMeshConfFile;
+            ConfigService.getInstance().setRootConfig(eventMeshConfFile);
+        }
+
+        EventMeshServer server = new EventMeshServer();
+
+        assertCommonConfig(server.getEventMeshTCPConfiguration());
+        assertCommonConfig(server.getEventMeshHttpConfiguration());
+        assertCommonConfig(server.getEventMeshGrpcConfiguration());
+
+        assertTCPConfig(server.getEventMeshTCPConfiguration());
+        assertHTTPConfig(server.getEventMeshHttpConfiguration());
+        assertGrpcConfig(server.getEventMeshGrpcConfiguration());
+    }
+
 }

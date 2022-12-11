@@ -166,4 +166,16 @@ public class EventMeshServer {
     public ServiceState getServiceState() {
         return serviceState;
     }
+
+    public EventMeshGrpcConfiguration getEventMeshGrpcConfiguration() {
+        return eventMeshGrpcConfiguration;
+    }
+
+    public EventMeshHTTPConfiguration getEventMeshHttpConfiguration() {
+        return eventMeshHttpConfiguration;
+    }
+
+    public EventMeshTCPConfiguration getEventMeshTCPConfiguration() {
+        return eventMeshTCPConfiguration;
+    }
 }

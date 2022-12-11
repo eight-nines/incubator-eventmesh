@@ -24,6 +24,7 @@ public class ConfigService {
 	
 	public ConfigService() {}
 
+	// 配置文件在主机上的绝对路径
 	public ConfigService setConfigPath(String configPath) {
 		this.configPath = configPath;
 		return this;
@@ -95,7 +96,7 @@ public class ConfigService {
 			}
 			File file = new File(filePath);
 			if (!file.exists()) {
-				throw new RuntimeException("fie is not existis");
+				throw new RuntimeException("fie is not exists");
 			}
 			String suffix = path.substring(path.lastIndexOf('.')+1);
 			configInfo.setFilePath(filePath);
