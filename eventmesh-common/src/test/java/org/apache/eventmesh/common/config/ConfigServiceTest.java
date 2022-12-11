@@ -40,7 +40,4 @@ public class ConfigServiceTest {
 
         Assert.assertEquals(config.eventMeshWebhookOrigin, "eventmesh.idc-succeed!!!");
     }
-
-
-
 }

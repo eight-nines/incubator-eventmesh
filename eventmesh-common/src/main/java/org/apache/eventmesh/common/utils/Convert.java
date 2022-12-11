@@ -1,5 +1,6 @@
 package org.apache.eventmesh.common.utils;
 
+import com.google.common.base.Splitter;
 import inet.ipaddr.AddressStringException;
 import inet.ipaddr.IPAddress;
 import inet.ipaddr.IPAddressString;
@@ -373,7 +374,8 @@ public class Convert {
 				if(convertInfo.getValue()==null ){
 					return new ArrayList<>();
 				}
-				String[] values = convertInfo.getValue().split(",");
+				List<String> values = Splitter.on(",").omitEmptyStrings()
+						.trimResults().splitToList(convertInfo.getValue());
 				List<Object> list;
 				if(Objects.equals(convertInfo.getField().getType(), List.class)) {
 					list = new ArrayList<>();
