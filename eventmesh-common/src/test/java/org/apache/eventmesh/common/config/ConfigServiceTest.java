@@ -11,7 +11,7 @@ public class ConfigServiceTest {
 
 
     @Test
-    public void testGetConfigFromCommonConfiguration() throws Exception {
+    public void testGetConfigForCommonConfiguration() throws Exception {
         ConfigService configService = ConfigService.getInstance();
         configService.setRootConfig("classPath://newConfiguration.properties");
 

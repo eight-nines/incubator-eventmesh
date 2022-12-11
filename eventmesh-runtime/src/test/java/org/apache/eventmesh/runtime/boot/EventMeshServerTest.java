@@ -5,6 +5,7 @@ import inet.ipaddr.IPAddressString;
 import junit.framework.TestCase;
 import org.apache.eventmesh.common.config.CommonConfiguration;
 import org.apache.eventmesh.common.config.ConfigService;
+import org.apache.eventmesh.runtime.configuration.EventMeshGrpcConfiguration;
 import org.apache.eventmesh.runtime.configuration.EventMeshHTTPConfiguration;
 import org.junit.Assert;
 
@@ -13,7 +14,7 @@ import java.util.List;
 
 public class EventMeshServerTest extends TestCase {
 
-    public void testGetConfig() throws Exception {
+    public void testGetConfigForEventMeshHTTPConfiguration() throws Exception {
 
         ConfigService configService = ConfigService.getInstance();
         configService.setRootConfig("classPath://newConfiguration-runtime.properties");
@@ -79,5 +80,61 @@ public class EventMeshServerTest extends TestCase {
         Assert.assertEquals(config.eventMeshIpv6BlackList, list6);
 
 
+    }
+
+    public void testGetConfigForEventMeshGrpcConfiguration() throws Exception {
+
+        ConfigService configService = ConfigService.getInstance();
+        configService.setRootConfig("classPath://newConfiguration-runtime.properties");
+
+        EventMeshGrpcConfiguration config = configService.getConfig(EventMeshGrpcConfiguration.class);
+
+        Assert.assertEquals(config.eventMeshEnv, "env-succeed!!!");
+        Assert.assertEquals(config.eventMeshIDC, "idc-succeed!!!");
+        Assert.assertEquals(config.eventMeshCluster, "cluster-succeed!!!");
+        Assert.assertEquals(config.eventMeshName, "name-succeed!!!");
+        Assert.assertEquals(config.sysID, "sysid-succeed!!!");
+        Assert.assertEquals(config.eventMeshConnectorPluginType, "connector-succeed!!!");
+        Assert.assertEquals(config.eventMeshSecurityPluginType, "security-succeed!!!");
+        Assert.assertEquals(config.eventMeshRegistryPluginType, "registry-succeed!!!");
+        Assert.assertEquals(config.eventMeshTracePluginType, "trace-succeed!!!");
+        Assert.assertEquals(config.eventMeshServerIp, "hostIp-succeed!!!");
+
+        List<String> list = new ArrayList<>();
+        list.add("metrics-succeed1!!!");
+        list.add("metrics-succeed2!!!");
+        list.add("metrics-succeed3!!!");
+        Assert.assertEquals(config.eventMeshMetricsPluginType, list);
+
+        Assert.assertEquals(config.eventMeshServerSecurityEnable, Boolean.TRUE);
+        Assert.assertEquals(config.eventMeshServerRegistryEnable, Boolean.TRUE);
+        Assert.assertEquals(config.eventMeshServerTraceEnable, Boolean.TRUE);
+
+        Assert.assertEquals(config.eventMeshWebhookOrigin, "eventmesh.idc-succeed!!!");
+
+
+        Assert.assertEquals(config.grpcServerPort, 816);
+        Assert.assertEquals(config.eventMeshSessionExpiredInMills, 1816);
+        Assert.assertEquals(config.eventMeshServerBatchMsgBatchEnabled, Boolean.FALSE);
+        Assert.assertEquals(config.eventMeshServerBatchMsgThreadNum, 2816);
+        Assert.assertEquals(config.eventMeshServerSendMsgThreadNum, 3816);
+        Assert.assertEquals(config.eventMeshServerPushMsgThreadNum, 4816);
+        Assert.assertEquals(config.eventMeshServerReplyMsgThreadNum, 5816);
+        Assert.assertEquals(config.eventMeshServerSubscribeMsgThreadNum, 6816);
+        Assert.assertEquals(config.eventMeshServerRegistryThreadNum, 7816);
+        Assert.assertEquals(config.eventMeshServerAdminThreadNum, 8816);
+        Assert.assertEquals(config.eventMeshServerRetryThreadNum, 9816);
+        Assert.assertEquals(config.eventMeshServerPullRegistryInterval, 11816);
+        Assert.assertEquals(config.eventMeshServerAsyncAccumulationThreshold, 12816);
+        Assert.assertEquals(config.eventMeshServerRetryBlockQueueSize, 13816);
+        Assert.assertEquals(config.eventMeshServerBatchBlockQueueSize, 14816);
+        Assert.assertEquals(config.eventMeshServerSendMsgBlockQueueSize, 15816);
+        Assert.assertEquals(config.eventMeshServerPushMsgBlockQueueSize, 16816);
+        Assert.assertEquals(config.eventMeshServerSubscribeMsgBlockQueueSize, 17816);
+        Assert.assertEquals(config.eventMeshServerBusyCheckInterval, 18816);
+        Assert.assertEquals(config.eventMeshServerConsumerEnabled, Boolean.TRUE);
+        Assert.assertEquals(config.eventMeshServerUseTls, Boolean.TRUE);
+        Assert.assertEquals(config.eventMeshBatchMsgRequestNumPerSecond, 21816);
+        Assert.assertEquals(config.eventMeshMsgReqNumPerSecond, 19816);
     }
 }
