@@ -31,44 +31,59 @@ import com.google.common.base.Preconditions;
 public class CommonConfiguration {
     @ConfigFiled(field = "eventMesh.server.env")
     public String eventMeshEnv                 = "P";
+
     @ConfigFiled(field = "eventMesh.server.idc")
     public String eventMeshIDC                 = "FT";
+
     @ConfigFiled(field = "eventMesh.server.cluster")
     public String eventMeshCluster             = "LS";
+
     @ConfigFiled(field = "eventMesh.server.name")
     public String eventMeshName                = "";
+
     @ConfigFiled(field = "eventMesh.sysid")
     public String sysID                        = "5477";
+
     @ConfigFiled(field = "eventMesh.connector.plugin.type")
     public String eventMeshConnectorPluginType = "rocketmq";
+
     @ConfigFiled(field = "eventMesh.security.plugin.type")
     public String eventMeshSecurityPluginType  = "security";
+
     @ConfigFiled(field = "eventMesh.registry.plugin.type")
     public String eventMeshRegistryPluginType  = "namesrv";
 
-    @ConfigFiled(field = "eventMesh.metrics.plugin") // todo
+    @ConfigFiled(field = "eventMesh.metrics.plugin")
     public List<String> eventMeshMetricsPluginType;
+
     @ConfigFiled(field = "eventMesh.trace.plugin")
     public String       eventMeshTracePluginType;
 
     @ConfigFiled(field = "")
     public    String               namesrvAddr                        = "";
+
     @ConfigFiled(field = "eventMesh.server.registry.registerIntervalInMills")
     public    Integer              eventMeshRegisterIntervalInMills   = 10 * 1000;
+
     @ConfigFiled(field = "eventMesh.server.registry.fetchRegistryAddrIntervalInMills")
     public    Integer              eventMeshFetchRegistryAddrInterval = 10 * 1000;
+
     @ConfigFiled(field = "eventMesh.server.hostIp")
     public    String               eventMeshServerIp                  = null;
+
     @ConfigFiled(field = "eventMesh.server.security.enabled")
     public    boolean              eventMeshServerSecurityEnable      = false;
+
     @ConfigFiled(field = "eventMesh.server.registry.enabled")
     public    boolean              eventMeshServerRegistryEnable      = false;
+
     @ConfigFiled(field = "eventMesh.server.trace.enabled")
     public    boolean              eventMeshServerTraceEnable         = false;
-    protected ConfigurationWrapper configurationWrapper;
 
     @ConfigFiled(reload = true)
     public String eventMeshWebhookOrigin = "eventmesh." + eventMeshIDC;
+
+    protected ConfigurationWrapper configurationWrapper;
 
     public CommonConfiguration(ConfigurationWrapper configurationWrapper) {
         this.configurationWrapper = configurationWrapper;
