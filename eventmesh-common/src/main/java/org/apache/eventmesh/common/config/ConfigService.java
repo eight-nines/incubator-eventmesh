@@ -13,12 +13,12 @@ public class ConfigService {
 
 	private Properties properties = new Properties();
 
-	private ConfigMonitorService configMonitorService = new ConfigMonitorService();
+	private final ConfigMonitorService configMonitorService = new ConfigMonitorService();
 	
 	private String configPath;
 	
 	
-	public static final ConfigService getInstance() {
+	public static ConfigService getInstance() {
 		return INSTANCE;
 	}
 	
@@ -30,12 +30,10 @@ public class ConfigService {
 		return this;
 	}
 	
-	public ConfigService setRootConfig(String path) throws Exception {
+	public void setRootConfig(String path) throws Exception {
 		ConfigInfo configInfo = new ConfigInfo();
 		configInfo.setPath(path);
 		properties = this.getConfig(configInfo);
-//		properties = transformLowerCase(properties);
-		return this;
 	}
 
 	public void getConfig(Object object, Class<?> clazz) throws Exception {

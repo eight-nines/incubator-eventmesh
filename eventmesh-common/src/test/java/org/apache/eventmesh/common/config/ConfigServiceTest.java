@@ -13,7 +13,7 @@ public class ConfigServiceTest {
     @Test
     public void testGetConfigForCommonConfiguration() throws Exception {
         ConfigService configService = ConfigService.getInstance();
-        configService.setRootConfig("classPath://newConfiguration.properties");
+        configService.setRootConfig("classPath://newConfiguration-common.properties");
 
         CommonConfiguration config = configService.getConfig(CommonConfiguration.class);
 
@@ -27,6 +27,8 @@ public class ConfigServiceTest {
         Assert.assertEquals(config.eventMeshRegistryPluginType, "registry-succeed!!!");
         Assert.assertEquals(config.eventMeshTracePluginType, "trace-succeed!!!");
         Assert.assertEquals(config.eventMeshServerIp, "hostIp-succeed!!!");
+        Assert.assertEquals(config.eventMeshRegisterIntervalInMills, Integer.valueOf(816));
+        Assert.assertEquals(config.eventMeshFetchRegistryAddrInterval, Integer.valueOf(1816));
 
         List<String> list = new ArrayList<>();
         list.add("metrics-succeed1!!!");

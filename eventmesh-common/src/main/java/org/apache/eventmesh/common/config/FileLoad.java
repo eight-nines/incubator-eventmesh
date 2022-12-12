@@ -19,11 +19,11 @@ public interface FileLoad {
 
 	public static FileLoad getFileLoad(String fileType) {
 		if (Objects.equals("properties", fileType)) {
-			return new PropertiesFileLoad();
+			return PROPERTIES_FILE_LOAD;
 		} else if (Objects.equals("yaml", fileType)) {
-			return new YamlFileLoad();
+			return YAML_FILE_LOAD;
 		}
-		return new PropertiesFileLoad();
+		return PROPERTIES_FILE_LOAD;
 	}
 
 	public static PropertiesFileLoad getPropertiesFileLoad() {
@@ -38,15 +38,17 @@ public interface FileLoad {
 
 	class PropertiesFileLoad implements FileLoad {
 		
-		private Convert convert = new Convert();
+		private final Convert convert = new Convert();
 		
 		@SuppressWarnings("unchecked")
 		public <T> T getConfig(ConfigInfo configInfo) throws Exception {
 			Properties properties = new Properties();
 			properties.load(new BufferedReader(new FileReader(configInfo.getFilePath())));
+			// case 1. 直接返回 Properties
 			if(Objects.isNull(configInfo.getClazz())) {
 				return (T)properties;
 			}
+			// case 2. 注入到 clazz
 			return (T) convert.createObject(configInfo, properties);
 		}
 		
@@ -54,8 +56,6 @@ public interface FileLoad {
 		public <T> T getConfig(Properties properties , ConfigInfo configInfo) throws Exception {
 			return (T) convert.createObject(configInfo, properties);
 		}
-		
-		
 	}
 
 	class YamlFileLoad implements FileLoad {
@@ -66,6 +66,5 @@ public interface FileLoad {
 			Yaml yaml = new Yaml();
 			return (T) yaml.loadAs(new BufferedInputStream(new FileInputStream(configInfo.getFilePath())),configInfo.getClazz());
 		}
-
 	}
 }

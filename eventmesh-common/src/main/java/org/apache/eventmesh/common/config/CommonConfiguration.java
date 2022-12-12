@@ -53,9 +53,9 @@ public class CommonConfiguration {
 
     @ConfigFiled(field = "")
     public    String               namesrvAddr                        = "";
-    @ConfigFiled(field = "")
+    @ConfigFiled(field = "eventMesh.server.registry.registerIntervalInMills")
     public    Integer              eventMeshRegisterIntervalInMills   = 10 * 1000;
-    @ConfigFiled(field = "")
+    @ConfigFiled(field = "eventMesh.server.registry.fetchRegistryAddrIntervalInMills")
     public    Integer              eventMeshFetchRegistryAddrInterval = 10 * 1000;
     @ConfigFiled(field = "eventMesh.server.hostIp")
     public    String               eventMeshServerIp                  = null;
@@ -67,7 +67,7 @@ public class CommonConfiguration {
     public    boolean              eventMeshServerTraceEnable         = false;
     protected ConfigurationWrapper configurationWrapper;
 
-    @ConfigFiled(field = "",reload = true)
+    @ConfigFiled(reload = true)
     public String eventMeshWebhookOrigin = "eventmesh." + eventMeshIDC;
 
     public CommonConfiguration(ConfigurationWrapper configurationWrapper) {
