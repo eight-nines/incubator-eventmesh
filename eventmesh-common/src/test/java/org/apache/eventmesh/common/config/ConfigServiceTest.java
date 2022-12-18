@@ -1,11 +1,27 @@
-package org.apache.eventmesh.common.config;
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
-import junit.framework.TestCase;
-import org.junit.Assert;
-import org.junit.Test;
+package org.apache.eventmesh.common.config;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import org.junit.Assert;
+import org.junit.Test;
 
 public class ConfigServiceTest {
 
@@ -27,6 +43,9 @@ public class ConfigServiceTest {
         Assert.assertEquals(config.eventMeshRegistryPluginType, "registry-succeed!!!");
         Assert.assertEquals(config.eventMeshTracePluginType, "trace-succeed!!!");
         Assert.assertEquals(config.eventMeshServerIp, "hostIp-succeed!!!");
+        Assert.assertEquals(config.eventMeshRegistryPluginUsername, "username-succeed!!!");
+        Assert.assertEquals(config.eventMeshRegistryPluginPassword, "password-succeed!!!");
+
         Assert.assertEquals(config.eventMeshRegisterIntervalInMills, Integer.valueOf(816));
         Assert.assertEquals(config.eventMeshFetchRegistryAddrInterval, Integer.valueOf(1816));
 
@@ -35,6 +54,12 @@ public class ConfigServiceTest {
         list.add("metrics-succeed2!!!");
         list.add("metrics-succeed3!!!");
         Assert.assertEquals(config.eventMeshMetricsPluginType, list);
+
+        List<String> list1 = new ArrayList<>();
+        list1.add("TCP");
+        list1.add("HTTP");
+        list1.add("GRPC");
+        Assert.assertEquals(config.eventMeshProvideServerProtocols, list1);
 
         Assert.assertEquals(config.eventMeshServerSecurityEnable, Boolean.TRUE);
         Assert.assertEquals(config.eventMeshServerRegistryEnable, Boolean.TRUE);
