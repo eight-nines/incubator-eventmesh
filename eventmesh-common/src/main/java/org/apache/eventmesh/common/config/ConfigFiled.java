@@ -17,29 +17,24 @@
 
 package org.apache.eventmesh.common.config;
 
-import java.io.File;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.TYPE, ElementType.FIELD})
+public @interface ConfigFiled {
 
-public class CommonConfigurationTest {
+    /**
+     * @return The key name of the configuration file
+     */
+    String field() default "";
 
-    private CommonConfiguration configuration;
-
-    @Before
-    public void before() throws Exception {
-        ConfigService configService = ConfigService.getInstance();
-        configService.setRootConfig("classPath://configuration.properties");
-
-        configuration = configService.getConfig(CommonConfiguration.class);
-    }
-
-    @Test
-    public void testInit() {
-        configuration.init();
-        Assert.assertEquals("value1", configuration.eventMeshEnv);
-        Assert.assertEquals("value2", configuration.eventMeshIDC);
-        Assert.assertEquals("3", configuration.sysID);
-    }
+    /**
+     * Note : When reload is true, the class must have a reload method
+     *
+     * @return Whether to reload. This parameter is used when other fields are associated
+     */
+    boolean reload() default false;
 }

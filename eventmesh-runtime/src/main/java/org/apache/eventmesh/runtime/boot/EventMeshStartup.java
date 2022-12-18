@@ -17,11 +17,16 @@
 
 package org.apache.eventmesh.runtime.boot;
 
+import org.apache.eventmesh.common.config.ConfigService;
 import org.apache.eventmesh.common.config.ConfigurationWrapper;
 import org.apache.eventmesh.runtime.constants.EventMeshConstants;
 
+import java.io.File;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.File;
 
 public class EventMeshStartup {
 
@@ -29,10 +34,11 @@ public class EventMeshStartup {
 
     public static void main(String[] args) throws Exception {
         try {
-            ConfigurationWrapper configurationWrapper =
-                    new ConfigurationWrapper(EventMeshConstants.EVENTMESH_CONF_HOME,
-                            EventMeshConstants.EVENTMESH_CONF_FILE, false);
-            EventMeshServer server = new EventMeshServer(configurationWrapper);
+            ConfigService.getInstance()
+                    .setConfigPath(EventMeshConstants.EVENTMESH_CONF_HOME + File.separator)
+                    .setRootConfig(EventMeshConstants.EVENTMESH_CONF_FILE);
+
+            EventMeshServer server = new EventMeshServer();
             server.init();
             server.start();
             Runtime.getRuntime().addShutdownHook(new Thread(() -> {

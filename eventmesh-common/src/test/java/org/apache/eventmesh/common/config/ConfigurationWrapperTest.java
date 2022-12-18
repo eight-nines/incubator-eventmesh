@@ -31,6 +31,7 @@ public class ConfigurationWrapperTest {
     public void before() {
         String file = ConfigurationWrapperTest.class.getResource("/configuration.properties").getFile();
         File f = new File(file);
+
         wraper = new ConfigurationWrapper(f.getParent(), f.getName(), false);
     }
 

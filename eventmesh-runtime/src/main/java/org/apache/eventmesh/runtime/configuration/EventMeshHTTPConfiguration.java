@@ -104,13 +104,15 @@ public class EventMeshHTTPConfiguration extends CommonConfiguration {
     public List<IPAddress> eventMeshIpv6BlackList = Collections.emptyList();
 
     public EventMeshHTTPConfiguration(ConfigurationWrapper configurationWrapper) {
-        super(configurationWrapper);
+
     }
 
     @Override
     public void init() {
         super.init();
 
+        // todo adapter
+        ConfigurationWrapper configurationWrapper = new ConfigurationWrapper(null, null, true);
         if (configurationWrapper != null) {
             String httpServerPortStr = configurationWrapper.getProp(ConfKeys.KEYS_EVENTMESH_SERVER_HTTP_PORT);
             Preconditions.checkState(StringUtils.isNotEmpty(httpServerPortStr)

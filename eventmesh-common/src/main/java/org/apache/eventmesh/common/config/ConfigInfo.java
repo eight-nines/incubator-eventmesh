@@ -30,30 +30,21 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ConfigInfo {
 
-    public static final String HUPM_SPOT = "spot";
-
-    public static final String HUPM_ROD = "rod";
+    public static final String HUMP_SPOT = "spot";
+    public static final String HUMP_ROD = "rod";
 
     private String path;
-
     private String field;
-
     private String prefix;
-
-    private Class<?> clazz;
-
-    private Object object;
-
-    private String filePath;
-
+    private String hump;
+    private boolean monitor;
     private boolean removePrefix;
 
-    private boolean monitor;
-
-    private String hump;
+    private Class<?> clazz;
+    private Object object;
+    private String filePath;
 
     Field objectField;
-
     Object instance;
 
     protected void setObjectField(Field objectField) {
@@ -71,5 +62,4 @@ public class ConfigInfo {
     protected Object getInstance() {
         return this.instance;
     }
-
 }

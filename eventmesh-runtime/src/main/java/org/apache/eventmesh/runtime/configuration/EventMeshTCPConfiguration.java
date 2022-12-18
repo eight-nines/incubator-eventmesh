@@ -80,12 +80,13 @@ public class EventMeshTCPConfiguration extends CommonConfiguration {
     private TrafficShapingConfig ctc = new TrafficShapingConfig(0, 2_000, 1_000, 10_000);
 
     public EventMeshTCPConfiguration(ConfigurationWrapper configurationWrapper) {
-        super(configurationWrapper);
+
     }
 
-    @Override
     public void init() {
-        super.init();
+
+        // todo adapter
+        ConfigurationWrapper configurationWrapper = new ConfigurationWrapper(null, null, true);
         eventMeshTcpServerPort = configurationWrapper.getIntProp(ConfKeys.KEYS_EVENTMESH_SERVER_TCP_PORT, eventMeshTcpServerPort);
 
         eventMeshTcpIdleReadSeconds = configurationWrapper.getIntProp(ConfKeys.KEYS_EVENTMESH_SERVER_READER_IDLE_SECONDS,

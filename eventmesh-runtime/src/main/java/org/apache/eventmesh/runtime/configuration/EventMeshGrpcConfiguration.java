@@ -76,13 +76,15 @@ public class EventMeshGrpcConfiguration extends CommonConfiguration {
     public String eventMeshIp = IPUtils.getLocalAddress();
 
     public EventMeshGrpcConfiguration(ConfigurationWrapper configurationWrapper) {
-        super(configurationWrapper);
+
     }
 
     @Override
     public void init() {
         super.init();
 
+        // todo adapter
+        ConfigurationWrapper configurationWrapper = new ConfigurationWrapper(null, null, true);
         if (configurationWrapper != null) {
             String httpServerPortStr = configurationWrapper.getProp(ConfKeys.KEYS_EVENTMESH_SERVER_GRPC_PORT);
             Preconditions.checkState(StringUtils.isNotEmpty(httpServerPortStr) && StringUtils.isNumeric(httpServerPortStr),
